@@ -1,10 +1,19 @@
-import mongoose from "mongoose";
-const { Schema } = mongoose;
+import mongoose, { InferSchemaType } from "mongoose";
+const { Schema, Types } = mongoose;
 
-const schema = new Schema({
-    title: String,
-    options: [{name: String, votes: Number}],
-    end: Date
+const pollSchema = new Schema({
+    _id: Types.ObjectId,
+    creator: { type: String, required: true },
+    title: { type: String, required: true },
+    results: [
+        {
+            name: { type: String, required: true },
+            votes: [{ type: String, required: true }],
+        },
+    ],
+    end: Date,
 });
 
-const Poll = mongoose.model("Poll", schema);
+export type Poll = InferSchemaType<typeof pollSchema>;
+
+export default mongoose.models.Poll || mongoose.model("Poll", pollSchema);
