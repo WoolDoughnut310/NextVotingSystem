@@ -18,10 +18,10 @@ export default function VotesDisplay() {
 
     const chartData = useMemo<ChartData<"bar">>(() => {
         return {
-            labels: results.map((result) => result.name),
+            labels: Object.keys(results),
             datasets: [
                 {
-                    data: results.map((result) => result.votes.length),
+                    data: Object.values(results),
                 },
             ],
         };

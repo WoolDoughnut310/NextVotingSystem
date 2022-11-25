@@ -17,13 +17,9 @@ export default function VotesControl() {
 
     return (
         <div>
-            {results.map((result) => (
-                <button
-                    key={result.name}
-                    type="button"
-                    onClick={() => onVote(result.name)}
-                >
-                    {result.name}
+            {Object.keys(results).map((name) => (
+                <button key={name} type="button" onClick={() => onVote(name)}>
+                    {name}
                 </button>
             ))}
         </div>
