@@ -1,4 +1,4 @@
-import mongoose, { InferSchemaType, SchemaDefinition } from "mongoose";
+import mongoose, { InferSchemaType } from "mongoose";
 const { Schema, Types } = mongoose;
 
 const pollSchema = new Schema({
@@ -6,6 +6,7 @@ const pollSchema = new Schema({
     creator: { type: String, required: true },
     title: { type: String, required: true },
     results: { type: Map, of: Number, required: true },
+    private: { type: Boolean, required: true, default: false },
     end: Date,
 });
 

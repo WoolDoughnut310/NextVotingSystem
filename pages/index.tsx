@@ -1,6 +1,10 @@
+import dbConnect from "lib/dbConnect";
+import { getSession } from "lib/getSession";
+import Poll, { Poll as PollType } from "models/Poll";
+import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 
-export default function Home() {
+const Home: NextPage<{ polls: PollType }> = ({ polls }) => {
     return (
         <div>
             <Head>
@@ -11,6 +15,30 @@ export default function Home() {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
+            <div>{JSON.stringify(polls)}</div>
         </div>
     );
-}
+};
+
+export const getServerSideProps: GetServerSideProps = async ({
+    req,
+    res,
+    query,
+}) => {
+    const { personal } = query;
+    const session = await getSession(req, res);
+    session.views = session.views ? session.views + 1 : 1;
+
+    await dbConnect();
+
+    const filter =
+        personal === "true" ? { creator: session.id } : { private: false };
+
+    const polls = await Poll.find(filter).exec();
+
+    return {
+        props: { polls },
+    };
+};
+
+export default Home;

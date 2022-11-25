@@ -8,13 +8,13 @@ import { Provider, Atom } from "jotai";
 import { idAtom, resultsAtom, sessionIdAtom } from "lib/store";
 import { getSession } from "lib/getSession";
 
-const PollPage: NextPage<{ data: PollType; sessionId: string }> = ({
-    data,
+const PollPage: NextPage<{ poll: PollType; sessionId: string }> = ({
+    poll,
     sessionId,
 }) => {
-    const [results, setResults] = useState(data.results);
+    const [results, setResults] = useState(poll.results);
 
-    useChannel(`polls:${data._id}`, "update-votes", (message) => {
+    useChannel(`polls:${poll._id}`, "update-votes", (message) => {
         setResults(message.data);
     });
 
@@ -22,7 +22,7 @@ const PollPage: NextPage<{ data: PollType; sessionId: string }> = ({
         <Provider
             initialValues={
                 [
-                    [idAtom, data._id],
+                    [idAtom, poll._id],
                     [resultsAtom, results],
                     [sessionIdAtom, sessionId],
                 ] as Iterable<readonly [Atom<unknown>, unknown]>
@@ -30,7 +30,7 @@ const PollPage: NextPage<{ data: PollType; sessionId: string }> = ({
         >
             <div>
                 <Head>
-                    <title>{data.title}</title>
+                    <title>{poll.title}</title>
                 </Head>
                 <div>
                     Votes: <span>{JSON.stringify(results)}</span>
