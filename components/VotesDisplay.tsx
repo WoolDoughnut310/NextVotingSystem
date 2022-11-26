@@ -22,6 +22,7 @@ export default function VotesDisplay() {
             datasets: [
                 {
                     data: Object.values(results),
+                    // borderWidth: 5,
                 },
             ],
         };

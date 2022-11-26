@@ -14,18 +14,15 @@ export default async function handler(
     }
 
     const { title, options, end } = req.body;
+    console.log("body", title, options, end);
 
     const poll = new Poll({
         creator: session.id,
         title: title,
-        results: options.map((option: string) => ({
-            name: option,
-            votes: 0,
-        })),
-        end: new Date(end),
+        results: options.map((option: string) => [option, []]),
+        end: end && new Date(end),
     });
 
     await poll.save();
-
-    res.status(200).json("Created successfullly");
+    res.status(200).json(poll);
 }

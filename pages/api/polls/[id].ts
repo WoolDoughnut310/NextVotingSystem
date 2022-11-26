@@ -24,7 +24,7 @@ export default async function handler(
             const { title, options, end } = req.body;
 
             let results = Object.fromEntries(
-                options.map((option: string) => [option, 0])
+                options.map((option: string) => [option, []])
             );
             results = { ...results, ...poll.results };
 

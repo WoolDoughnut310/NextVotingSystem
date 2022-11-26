@@ -16,9 +16,14 @@ export default function VotesControl() {
     };
 
     return (
-        <div>
+        <div className="mt-3 p-4 w-full grid gap-3 h-full ">
             {Object.keys(results).map((name) => (
-                <button key={name} type="button" onClick={() => onVote(name)}>
+                <button
+                    key={name}
+                    type="button"
+                    onClick={() => onVote(name)}
+                    className="h-32 bg-slate-400 hover:bg-slate-300 rounded-lg px-4 py-3 text-white border-gray-200 text-3xl"
+                >
                     {name}
                 </button>
             ))}

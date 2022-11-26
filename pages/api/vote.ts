@@ -14,26 +14,27 @@ export default async function handler(
 
     const poll = await Poll.findById(id).exec();
 
-    const results = poll.results;
+    const results = Object.fromEntries(poll.results);
+    console.log(results);
 
-    // If the user has voted for an option,
-    // remove their vote from that option
-    // and add their id to the new option
-    for (let result of results) {
-        if (result.name === option) {
-            if (!result.votes.includes(session.id)) {
-                result.votes.push(session.id);
-            }
-        } else if (result.votes.includes(session.id)) {
-            result.votes = result.votes.filter((vote: string) => vote !== session.id);
-        }
+    if (!Object.keys(results).includes(option)) {
+        res.status(400).json(`Invalid option "${option}"`);
+        return;
+    }
+
+    if (results[option].includes(session.id)) {
+        results[option] = results[option].filter(
+            (voter: string) => voter !== session.id
+        );
+    } else {
+        results[option].push(session.id);
     }
 
     await poll.update({ results });
 
     // Publish update to the channel
     const channel = rest.channels.get(`polls:${id}`);
-    channel.publish("update-votes", results)
+    channel.publish("update-votes", results);
 
     res.status(200).end();
 }
