@@ -13,16 +13,22 @@ export default async function handler(
         return;
     }
 
-    const { title, options, end } = req.body;
-    console.log("body", title, options, end);
+    const { title, options, end, privacy } = req.body;
 
     const poll = new Poll({
         creator: session.id,
         title: title,
         results: options.map((option: string) => [option, []]),
         end: end && new Date(end),
+        privacy,
     });
 
     await poll.save();
     res.status(200).json(poll);
 }
+
+export const config = {
+    api: {
+        externalResolver: false,
+    },
+};

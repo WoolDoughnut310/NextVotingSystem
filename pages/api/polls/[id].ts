@@ -14,6 +14,11 @@ export default async function handler(
 
     const poll = await Poll.findById(id).exec();
 
+    if (!poll) {
+        res.status(404).send("Cannot find poll at requested ID");
+        return;
+    }
+
     if (poll.creator !== session.id) {
         res.status(403).end("Unauthorized access to poll");
         return;
@@ -29,13 +34,15 @@ export default async function handler(
             results = { ...results, ...poll.results };
 
             // Update to save votes for options
-            await Poll.findByIdAndUpdate(id, {
+            const result = await Poll.findByIdAndUpdate(id, {
                 title: title,
                 results,
                 end: new Date(end),
             }).exec();
 
-            res.status(200).json("Created successfullly");
+            const channel = rest.channels.get(`polls:${id}`);
+            await channel.publish("update-info", result);
+            res.status(200).json(result);
             break;
         case "DELETE":
             await Poll.findByIdAndDelete(id).exec();
@@ -44,3 +51,9 @@ export default async function handler(
             res.status(405).end(`Method ${req.method} Not Allowed`);
     }
 }
+
+export const config = {
+    api: {
+        externalResolver: false,
+    },
+};

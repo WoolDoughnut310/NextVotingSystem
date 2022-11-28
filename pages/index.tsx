@@ -2,11 +2,12 @@ import AppBar from "components/AppBar";
 import PollDisplay from "components/PollDisplay";
 import dbConnect from "lib/dbConnect";
 import { getSession } from "lib/getSession";
-import Poll, { Poll as PollType } from "models/Poll";
+import Poll, { PollPrimitive } from "models/Poll";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 
-const Home: NextPage<{ polls: PollType[] }> = ({ polls }) => {
+const Home: NextPage<{ polls: PollPrimitive[] }> = ({ polls }) => {
+    console.log("polls", polls);
     return (
         <>
             <Head>
@@ -19,7 +20,7 @@ const Home: NextPage<{ polls: PollType[] }> = ({ polls }) => {
             </Head>
             <AppBar />
             <main className="p-3">
-                <div className="grid gap-2 grid-cols-3">
+                <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {polls.map((poll) => (
                         <PollDisplay key={poll._id} data={poll} />
                     ))}
@@ -34,16 +35,16 @@ export const getServerSideProps: GetServerSideProps = async ({
     res,
     query,
 }) => {
-    console.log("here again");
     const { personal } = query;
     const session = await getSession(req, res);
 
     await dbConnect();
 
     const filter =
-        personal === "true" ? { creator: session.id } : { private: false };
+        personal === "true" ? { creator: session.id } : { privacy: false };
 
     const result = await Poll.find(filter);
+    console.log("here again", result);
     const polls = result.map((doc) => {
         const poll = doc.toJSON();
         poll._id = poll._id.toString();

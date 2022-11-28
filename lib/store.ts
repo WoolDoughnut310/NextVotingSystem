@@ -1,6 +1,16 @@
 import { atom } from "jotai";
-import { Poll } from "models/Poll";
+import { PollPrimitive } from "models/Poll";
 
-export const idAtom = atom("");
-export const resultsAtom = atom<Poll["results"]>([]);
+interface A {
+    m: Map<string, string>;
+}
+
+export const pollAtom = atom<PollPrimitive>({
+    _id: "",
+    creator: "",
+    title: "",
+    results: {},
+    privacy: false,
+    end: "",
+});
 export const sessionIdAtom = atom("");

@@ -6,11 +6,12 @@ import { useRouter } from "next/router";
 import { Poll } from "models/Poll";
 import PollEditForm from "components/PollEditForm";
 
-const NewPage: NextPage = () => {
+const EditPage: NextPage = () => {
     const router = useRouter();
+    const id = router.query.id;
 
     const onSubmit = async (data: Omit<Poll, "_id">) => {
-        const response = await axios.post("/api/polls", data);
+        const response = await axios.put(`/api/polls/${router.query.id}`, data);
         const poll = response.data;
         router.push(`/${poll._id}`);
     };
@@ -18,7 +19,7 @@ const NewPage: NextPage = () => {
     return (
         <div className="w-screen h-screen bg-slate-500 overflow-x-hidden">
             <Head>
-                <title>Votr - New Poll</title>
+                <title>Votr - Editing</title>
             </Head>
             <main
                 className="
@@ -30,7 +31,7 @@ const NewPage: NextPage = () => {
                     font-bold text-4xl
                     text-center mb-5 text-gray-200"
                 >
-                    New Poll
+                    Edit Poll
                 </h1>
                 <PollEditForm onSubmit={onSubmit} />
             </main>
@@ -38,4 +39,6 @@ const NewPage: NextPage = () => {
     );
 };
 
-export default NewPage;
+//TODO
+
+export default EditPage;
