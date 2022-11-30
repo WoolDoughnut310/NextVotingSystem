@@ -1,10 +1,17 @@
 import { differenceInMinutes, format } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
 import { PlusSquare, XCircle } from "react-feather";
-import { Poll } from "models/Poll";
+
+type PollData = {
+    title: string;
+    options: string[];
+    end: Date;
+    privacy: boolean;
+};
 
 interface PollEditFormProps {
-    onSubmit: (data: Omit<Poll, "_id">) => void;
+    onSubmit: (data: PollData) => void;
+    initialData?: Omit<PollData, "end"> & { time: string; date: string };
 }
 
 const TitleInput = ({
@@ -105,7 +112,6 @@ const OptionsInput = ({
     };
 
     const updateOption = (index: number, newValue: string) => {
-        console.log(index, newValue);
         setOptions((oldOptions) => {
             const newOptions = [...oldOptions];
             newOptions.splice(index, 1, newValue);
@@ -145,7 +151,7 @@ const OptionsInput = ({
                             type="button"
                             title={
                                 options.length === 2
-                                    ? "Poll must have at least one option"
+                                    ? "Poll must have at least two options"
                                     : "Remove option"
                             }
                             className="
@@ -201,11 +207,13 @@ const PrivacyInput = ({
 );
 
 export default function PollEditForm(props: PollEditFormProps) {
-    const [title, setTitle] = useState("");
-    const [options, setOptions] = useState(["", ""]);
-    const [time, setTime] = useState("");
-    const [date, setDate] = useState("");
-    const [privacy, setPrivacy] = useState(false);
+    const [title, setTitle] = useState(props.initialData?.title ?? "");
+    const [options, setOptions] = useState(
+        props.initialData?.options ?? ["", ""]
+    );
+    const [time, setTime] = useState(props.initialData?.time ?? "");
+    const [date, setDate] = useState(props.initialData?.date ?? "");
+    const [privacy, setPrivacy] = useState(props.initialData?.privacy ?? false);
 
     const onSubmit = (event: React.FormEvent) => {
         event.preventDefault();

@@ -22,7 +22,7 @@ export default function PollDisplay({ data }: { data: PollPrimitive }) {
             onClick={openPoll}
             className="mx-auto sm:m-0 rounded-xl border-gray-300 border-4 bg-slate-200 flex flex-col p-4 w-60 h-40 items-center justify-around hover:cursor-pointer"
         >
-            <h3 className="text-xl font-semibold">{data.title}</h3>
+            <h3 className="text-xl font-semibold text-center">{data.title}</h3>
             <span
                 className="flex flex-row"
                 title={`${options} options available`}
