@@ -3,7 +3,6 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { Poll } from "models/Poll";
 import PollEditForm from "components/PollEditForm";
 
 const NewPage: NextPage = () => {

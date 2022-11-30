@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Poll from "models/Poll";
 import { getSession } from "lib/getSession";
+import dbConnect from "lib/dbConnect";
 
 export default async function handler(
     req: NextApiRequest,
@@ -11,6 +12,7 @@ export default async function handler(
         return;
     }
 
+    await dbConnect();
     const session = await getSession(req, res);
     await session.commit();
 
