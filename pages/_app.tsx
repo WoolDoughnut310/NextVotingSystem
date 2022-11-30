@@ -10,8 +10,10 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement);
 
+const prefix = process.env.API_ROOT || "";
+
 configureAbly({
-    authUrl: `${process.env.API_ROOT}/api/ably-token`,
+    authUrl: `${prefix}/api/ably-token`,
 });
 
 export default function App({ Component, pageProps }: AppProps) {
