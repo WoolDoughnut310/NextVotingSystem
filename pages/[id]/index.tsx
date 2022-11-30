@@ -49,8 +49,10 @@ const PollPage: NextPage<{ poll: PollPrimitive; sessionId: string }> = (
         setPoll(message.data);
     });
 
-    const onDelete = () => {
-        return axios.delete(`api/polls/${poll._id}`);
+    const onDelete = async () => {
+        //TODO Add confirmation
+        await axios.delete(`api/polls/${poll._id}`);
+        router.push("/");
     };
 
     const isCreator = poll.creator === sessionId;
