@@ -10,6 +10,8 @@ export default async function handler(
     res: NextApiResponse
 ) {
     const session = await getSession(req, res);
+    await session.commit();
+
     const { id, option } = req.body;
 
     const poll = await Poll.findById(id).exec();
@@ -18,8 +20,6 @@ export default async function handler(
         res.status(404).send("Cannot find poll at requested ID");
         return;
     }
-
-    console.log(session.id);
 
     const results = Object.fromEntries(poll.results);
 
@@ -33,17 +33,13 @@ export default async function handler(
     for (let candidate of Object.keys(results)) {
         voters = results[candidate];
         if (voters.includes(session.id)) {
-            console.log("removing vote from", candidate);
-            results[candidate] = results[candidate].filter(
-                (voter: string) => voter !== session.id
-            );
-        }
-
-        if (candidate === option) {
-            console.log("adding vote");
-            results[candidate].push(session.id);
+            // Already voted, stop from voting again
+            res.status(403).json(`Already voted for "${candidate}"`);
+            return;
         }
     }
+
+    results[option].push(session.id);
 
     await poll.updateOne({ results });
 
@@ -56,6 +52,6 @@ export default async function handler(
 
 export const config = {
     api: {
-        externalResolver: false,
+        externalResolver: true,
     },
 };

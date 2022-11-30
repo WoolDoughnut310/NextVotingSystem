@@ -7,6 +7,7 @@ export default async function handler(
     res: NextApiResponse
 ) {
     const session = await getSession(req, res);
+    await session.commit();
 
     if (req.method !== "POST") {
         res.status(405).end(`Method ${req.method} Not Allowed`);
@@ -29,6 +30,6 @@ export default async function handler(
 
 export const config = {
     api: {
-        externalResolver: false,
+        externalResolver: true,
     },
 };

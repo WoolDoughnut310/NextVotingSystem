@@ -9,6 +9,8 @@ export default async function handler(
     res: NextApiResponse
 ) {
     const session = await getSession(req, res);
+    await session.commit();
+
     const tokenParams = {
         clientId: session.id,
     };
@@ -16,3 +18,9 @@ export default async function handler(
     const tokenRequest = await rest.auth.createTokenRequest(tokenParams);
     res.status(200).json(tokenRequest);
 }
+
+export const config = {
+    api: {
+        externalResolver: true,
+    },
+};
