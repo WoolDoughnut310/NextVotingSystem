@@ -8,13 +8,15 @@ const chartOptions: ChartOptions<"bar"> = {
     scales: {
         y: {
             beginAtZero: true,
+            ticks: {
+                precision: 0,
+            },
         },
     },
 };
 
 export default function VotesDisplay() {
     const { results } = useAtomValue(pollAtom);
-    console.log(results);
 
     const chartData = useMemo<ChartData<"bar">>(() => {
         return {
