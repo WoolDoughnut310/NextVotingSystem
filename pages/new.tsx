@@ -9,7 +9,7 @@ import PollEditForm from "components/PollEditForm";
 const NewPage: NextPage = () => {
     const router = useRouter();
 
-    const onSubmit = async (data: Omit<Poll, "_id">) => {
+    const onSubmit = async (data: any) => {
         const response = await axios.post("/api/polls", data);
         const poll = response.data;
         router.push(`/${poll._id}`);

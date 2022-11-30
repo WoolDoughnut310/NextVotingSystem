@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import type { GetServerSideProps, NextPage } from "next";
-import Poll, { PollPrimitive } from "../../models/Poll";
+import { PollPrimitive } from "../../models/Poll";
 import dbConnect from "lib/dbConnect";
 import Head from "next/head";
 import { useChannel } from "@ably-labs/react-hooks";
@@ -9,10 +9,12 @@ import { pollAtom, sessionIdAtom } from "lib/store";
 import { getSession } from "lib/getSession";
 import VotesDisplay from "components/VotesDisplay";
 import VotesControl from "components/VotesControl";
-import { Edit2, Home } from "react-feather";
+import { Clipboard, Edit2, Home, Share, Trash } from "react-feather";
 import { useRouter } from "next/router";
 import { differenceInMinutes } from "date-fns";
 import EndResult from "components/EndResult";
+import getPoll from "lib/getPoll";
+import axios from "axios";
 
 const PollPage: NextPage<{ poll: PollPrimitive; sessionId: string }> = (
     props
@@ -37,7 +39,6 @@ const PollPage: NextPage<{ poll: PollPrimitive; sessionId: string }> = (
     }, [props]);
 
     useChannel(`polls:${poll._id}`, "update-votes", (message) => {
-        console.log("got update", message);
         setPoll((oldValue: PollPrimitive) => ({
             ...oldValue,
             results: message.data,
@@ -45,12 +46,15 @@ const PollPage: NextPage<{ poll: PollPrimitive; sessionId: string }> = (
     });
 
     useChannel(`polls:${poll._id}`, "update-info", (message) => {
-        console.log("info update", message);
         setPoll(message.data);
     });
 
+    const onDelete = () => {
+        return axios.delete(`api/polls/${poll._id}`);
+    };
+
     const isCreator = poll.creator === sessionId;
-    const hasEnded = differenceInMinutes(Date.now(), new Date(poll.end)) < 0;
+    const hasEnded = differenceInMinutes(new Date(), new Date(poll.end)) > 0;
     const showDisplay = hasEnded || isCreator || hasVoted;
 
     return (
@@ -58,25 +62,49 @@ const PollPage: NextPage<{ poll: PollPrimitive; sessionId: string }> = (
             <Head>
                 <title>{poll.title}</title>
             </Head>
-            <div className="flex flex-row absolute top-4 left-4 space-x-3">
-                <button
-                    type="button"
-                    title="Go home"
-                    onClick={() => router.push("/")}
-                    className="p-3 rounded-full bg-blue-300 hover:ring"
-                >
-                    <Home className="text-white" />
-                </button>
-                {!isCreator && (
+            <div className="w-full flex flex-row justify-between absolute top-0 left-0 space-x-3 p-4">
+                <div className="flex flex-row space-x-3">
                     <button
                         type="button"
-                        title="Open edit page"
-                        onClick={() => router.push("/edit")}
+                        title="Go home"
+                        onClick={() => router.push("/")}
                         className="p-3 rounded-full bg-blue-300 hover:ring"
                     >
-                        <Edit2 className="text-white" />
+                        <Home className="text-white" />
                     </button>
-                )}
+                    {isCreator && (
+                        <button
+                            type="button"
+                            title="Open edit page"
+                            onClick={() => router.push(`/${poll._id}/edit`)}
+                            className="p-3 rounded-full bg-blue-300 hover:ring"
+                        >
+                            <Edit2 className="text-white" />
+                        </button>
+                    )}
+                </div>
+                <div className="flex flex-row space-x-3">
+                    <button
+                        type="button"
+                        title="Copy the link to this poll"
+                        onClick={() =>
+                            navigator.clipboard.writeText(window.location.href)
+                        }
+                        className="p-3 rounded-full bg-blue-300 hover:ring active:scale-90"
+                    >
+                        <Clipboard className="text-white" />
+                    </button>
+                    {isCreator && (
+                        <button
+                            type="button"
+                            title="Delete this poll"
+                            onClick={onDelete}
+                            className="p-3 rounded-full bg-red-300 hover:ring ring-fuchsia-400"
+                        >
+                            <Trash className="text-white" />
+                        </button>
+                    )}
+                </div>
             </div>
             <main className="p-5 h-screen w-screen flex flex-col">
                 <h1 className="font-bold text-4xl text-center my-5 underline">
@@ -96,20 +124,17 @@ export const getServerSideProps: GetServerSideProps = async ({
     req,
     res,
 }) => {
-    await dbConnect();
     const session = await getSession(req, res);
 
-    const id = params?.id;
-    const poll = await Poll.findById(id).lean();
+    await dbConnect();
+    const id = params?.id as string;
+    const poll = await getPoll(id);
 
     if (!poll) {
         return {
             notFound: true,
         };
     }
-
-    poll._id = poll._id.toString();
-    poll.end = poll.end.toString();
 
     return {
         props: {

@@ -5,9 +5,9 @@ import { getSession } from "lib/getSession";
 import Poll, { PollPrimitive } from "models/Poll";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
+import { Terminal } from "react-feather";
 
 const Home: NextPage<{ polls: PollPrimitive[] }> = ({ polls }) => {
-    console.log("polls", polls);
     return (
         <>
             <Head>
@@ -20,6 +20,13 @@ const Home: NextPage<{ polls: PollPrimitive[] }> = ({ polls }) => {
             </Head>
             <AppBar />
             <main className="p-3">
+                {polls.length === 0 && (
+                    <div className="h-80 w-full flex flex-col justify-center items-center space-y-5 text-2xl font-semibold">
+                        <h3>No polls created.</h3>
+                        <Terminal className="w-9 h-9" />
+                        <h3>Create one now!</h3>
+                    </div>
+                )}
                 <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {polls.map((poll) => (
                         <PollDisplay key={poll._id} data={poll} />
@@ -44,7 +51,6 @@ export const getServerSideProps: GetServerSideProps = async ({
         personal === "true" ? { creator: session.id } : { privacy: false };
 
     const result = await Poll.find(filter);
-    console.log("here again", result);
     const polls = result.map((doc) => {
         const poll = doc.toJSON();
         poll._id = poll._id.toString();
