@@ -46,7 +46,8 @@ export default async function handler(
 
     results[option].push(session.id);
 
-    await poll.updateOne({ results });
+    poll.results = results;
+    await poll.save();
 
     // Publish update to the channel
     const channel = rest.channels.get(`polls:${id}`);

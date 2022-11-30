@@ -30,21 +30,21 @@ export default async function handler(
         case "PUT":
             const { title, options, end, privacy } = req.body;
 
+            // Any new options will have empty arrays, but
+            // existing options requested will be overwritten
+            // by their previous value
             let results = Object.fromEntries(
                 options.map((option: string) => [option, []])
             );
             results = { ...results, ...Object.fromEntries(poll.results) };
 
-            // Update to save votes for options
-            await Poll.findByIdAndUpdate(id, {
-                title: title,
-                results,
-                end: new Date(end),
-                privacy,
-            }).exec();
+            poll.title = title;
+            poll.results = results;
+            poll.end = new Date(end);
+            poll.privacy = privacy;
 
-            // Query the database for the updated object
-            poll = await Poll.findById(id).exec();
+            // Save the updated document and return it
+            poll = await poll.save();
 
             const channel = rest.channels.get(`polls:${id}`);
             await channel.publish("update-info", poll);
