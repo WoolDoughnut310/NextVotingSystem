@@ -11,7 +11,9 @@ import {
 ChartJS.register(CategoryScale, LinearScale, BarElement);
 
 configureAbly({
-    authUrl: `https://${process.env.VERCEL_URL as string}/api/ably-token`,
+    authUrl: `https://${
+        process.env.NEXT_PUBLIC_VERCEL_URL as string
+    }/api/ably-token`,
 });
 
 export default function App({ Component, pageProps }: AppProps) {
