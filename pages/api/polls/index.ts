@@ -6,13 +6,13 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const session = await getSession(req, res);
-    await session.commit();
-
     if (req.method !== "POST") {
         res.status(405).end(`Method ${req.method} Not Allowed`);
         return;
     }
+
+    const session = await getSession(req, res);
+    await session.commit();
 
     const { title, options, end, privacy } = req.body;
 
@@ -27,9 +27,3 @@ export default async function handler(
     await poll.save();
     res.status(200).json(poll);
 }
-
-export const config = {
-    api: {
-        externalResolver: true,
-    },
-};

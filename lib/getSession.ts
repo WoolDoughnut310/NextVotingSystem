@@ -5,6 +5,7 @@ import Redis from "ioredis";
 
 const RedisStore = RedisStoreFactory(expressSession);
 export const getSession = nextSession({
+    autoCommit: false,
     store: promisifyStore(
         new RedisStore({
             client: new Redis(),

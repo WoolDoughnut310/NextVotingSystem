@@ -18,9 +18,3 @@ export default async function handler(
     const tokenRequest = await rest.auth.createTokenRequest(tokenParams);
     res.status(200).json(tokenRequest);
 }
-
-export const config = {
-    api: {
-        externalResolver: true,
-    },
-};
