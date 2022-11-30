@@ -9,9 +9,9 @@ export const getSession = nextSession({
     store: promisifyStore(
         new RedisStore({
             client: new Redis({
-                host: process.env.REDIS_HOST,
-                port: process.env.REDIS_PORT,
-                password: process.env.REDIS_PASSWORD,
+                host: process.env.REDIS_HOST as string,
+                port: parseInt(process.env.REDIS_PORT as string),
+                password: process.env.REDIS_PASSWORD as string,
             }),
         })
     ),
