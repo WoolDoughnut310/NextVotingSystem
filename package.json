@@ -13,6 +13,7 @@
     "@types/node": "18.11.9",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.9",
+    "@vercel/analytics": "^0.1.5",
     "ably": "^1.2.33",
     "axios": "^1.2.0",
     "chart.js": "^4.0.1",
