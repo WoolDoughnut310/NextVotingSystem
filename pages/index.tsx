@@ -50,6 +50,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     const filter =
         personal === "true" ? { creator: session.id } : { privacy: false };
 
+    // Serialize ObjectId and Date to string
     const result = await Poll.find(filter);
     const polls = result.map((doc) => {
         const poll = doc.toJSON();

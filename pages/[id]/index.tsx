@@ -9,7 +9,7 @@ import { pollAtom, sessionIdAtom } from "lib/store";
 import { getSession } from "lib/getSession";
 import VotesDisplay from "components/VotesDisplay";
 import VotesControl from "components/VotesControl";
-import { Clipboard, Edit2, Home, Share, Trash } from "react-feather";
+import { Clipboard, Edit2, Home, Trash } from "react-feather";
 import { useRouter } from "next/router";
 import { differenceInMinutes } from "date-fns";
 import EndResult from "components/EndResult";

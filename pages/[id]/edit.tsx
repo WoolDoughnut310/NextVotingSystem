@@ -3,7 +3,7 @@ import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { Poll, PollPrimitive } from "models/Poll";
+import { PollPrimitive } from "models/Poll";
 import PollEditForm from "components/PollEditForm";
 import dbConnect from "lib/dbConnect";
 import getPoll from "lib/getPoll";

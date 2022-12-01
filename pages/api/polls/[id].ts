@@ -32,8 +32,8 @@ export default async function handler(
         case "PUT":
             const { title, options, end, privacy } = req.body;
 
-            // Any new options will have empty arrays, but
-            // existing options requested will be overwritten
+            // Any new options will have empty arrays for their voters,
+            // but existing options requested will be overwritten
             // by their previous value
             let results = Object.fromEntries(
                 options.map((option: string) => [option, []])
@@ -53,7 +53,7 @@ export default async function handler(
             res.status(200).end();
             break;
         case "DELETE":
-            await Poll.findByIdAndDelete(id).exec();
+            await poll.delete();
             res.status(200).end();
             break;
         default:

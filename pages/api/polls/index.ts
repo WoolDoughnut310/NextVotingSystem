@@ -20,7 +20,7 @@ export default async function handler(
 
     const poll = new Poll({
         creator: session.id,
-        title: title,
+        title,
         results: options.map((option: string) => [option, []]),
         end: end && new Date(end),
         privacy,
