@@ -24,6 +24,7 @@ const PollPage: NextPage<{ poll: PollPrimitive; sessionId: string }> = (
     const [poll, setPoll] = useAtom(pollAtom);
 
     const hasVoted = useMemo(() => {
+        console.log("id1", sessionId);
         for (let voters of Object.values(poll.results)) {
             if (voters.includes(sessionId)) {
                 return true;
@@ -127,6 +128,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     res,
 }) => {
     const session = await getSession(req, res);
+    await session.commit();
 
     await dbConnect();
     const id = params?.id as string;

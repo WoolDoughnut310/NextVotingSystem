@@ -64,6 +64,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     res,
 }) => {
     const session = await getSession(req, res);
+    await session.commit();
 
     await dbConnect();
     const id = params?.id as string;
