@@ -30,5 +30,5 @@ export default function VotesDisplay() {
         };
     }, [results]);
 
-    return <Bar data={chartData} options={chartOptions} />;
+    return <Bar data={chartData} options={chartOptions} updateMode="resize" />;
 }

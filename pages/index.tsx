@@ -44,6 +44,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 }) => {
     const { personal } = query;
     const session = await getSession(req, res);
+    await session.commit();
 
     await dbConnect();
 

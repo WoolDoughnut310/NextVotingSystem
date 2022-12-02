@@ -10,6 +10,7 @@ export default async function handler(
 ) {
     const session = await getSession(req, res);
     await session.commit();
+    console.log("id2", session.id)
 
     const tokenParams = {
         clientId: session.id,
